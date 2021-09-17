@@ -26,7 +26,7 @@
                                 <button class="orderQuantity" @click="changeQuantity(idnum, quantity, 'plus')"><i class="fas fa-plus"></i></button>
                             </div>
                         </div>
-                        <button class="removeItem position-absolute top-0 end-0" @click="removeFromCart(idnum)"><i class="fas fa-close"></i></button>
+                        <button class="removeItem position-absolute top-0 end-0" @click="removeFromCart(idnum)"><i class="fas fa-times"></i></button>
                     </div>
                 </div>
             </div>
