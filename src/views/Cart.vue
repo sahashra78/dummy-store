@@ -100,7 +100,7 @@ export default {
         },
         async changeQuantity(id, qty, action){
             const updatedQuantity = 0;
-            if(action == "minus") { this.updatedQuantity = qty - 1;  }
+            if(action == "minus" && qty>1) { this.updatedQuantity = qty - 1;  }
             if(action == "plus") { this.updatedQuantity = qty + 1;  }
             const item = await getItem(id);
             item.quantity = this.updatedQuantity;
