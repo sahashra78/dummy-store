@@ -1,0 +1,8 @@
+<template>
+  <div class="about">
+    <h1>About page</h1>
+    <img alt="Vue logo" src="../assets/logo.png">
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad quam cupiditate aliquid sed possimus minima fugit natus vero quas numquam ab nemo laudantium quasi, incidunt dolores. Vitae, sunt iusto, corrupti dolores alias corporis repellendus perspiciatis omnis odit, ipsam dolorum eos voluptates suscipit? Magnam ullam dicta error. Molestias mollitia laudantium voluptates ipsa animi ipsam perferendis sint aspernatur, itaque recusandae! Quos dolorem quibusdam, dignissimos at corporis repellat maiores magni distinctio architecto dolorum a quam libero in facilis beatae eum reprehenderit pariatur minima repellendus. Hic vel voluptates suscipit error neque quasi magni natus est, nemo molestias eligendi, quidem cupiditate mollitia adipisci quibusdam laboriosam?</p>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad quam cupiditate aliquid sed possimus minima fugit natus vero quas numquam ab nemo laudantium quasi, incidunt dolores. Vitae, sunt iusto, corrupti dolores alias corporis repellendus perspiciatis omnis odit, ipsam dolorum eos voluptates suscipit? Magnam ullam dicta error. Molestias mollitia laudantium voluptates ipsa animi ipsam perferendis sint aspernatur, itaque recusandae! Quos dolorem quibusdam, dignissimos at corporis repellat maiores magni distinctio architecto dolorum a quam libero in facilis beatae eum reprehenderit pariatur minima repellendus. Hic vel voluptates suscipit error neque quasi magni natus est, nemo molestias eligendi, quidem cupiditate mollitia adipisci quibusdam laboriosam?</p>
+  </div>
+</template>
