@@ -13,6 +13,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 30px 50px;
+    background: #fff;
     box-shadow: 1px 1px 5px #a0a0a0;
     border-radius: 10px;
     z-index: 10;
