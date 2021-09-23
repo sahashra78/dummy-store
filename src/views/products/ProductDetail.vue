@@ -24,7 +24,7 @@
                 &emsp;<i class="fas fa-user"></i>
                 &ensp;<span v-text="product.rating.count"></span>
               </p>
-              <div>
+              <div v-if="!isInCart">
                 <div class="d-flex">
                   <button class="btn btn-primary" @click="quantity>1 ? quantity-- : null"><i class="fas fa-minus"></i></button>
                   <input class="quantity" type="text" v-model="quantity" name="quantity" min="1">
@@ -32,6 +32,10 @@
                 </div>
                   <button class="btn btn-primary my-3" @click.prevent="addToCart()">Add to Cart</button>
                   <span class="px-3" :class="messageStyle" v-text="message"></span>
+              </div>
+              <div v-else>
+                <p>Item is already present in the cart.</p>
+                <button class="btn btn-primary" @click.prevent="viewCart()">View Cart</button>
               </div>
             </div>
           </div>
@@ -65,6 +69,22 @@ export default {
 
         this.getItems();
     },
+    computed:{
+      isInCart() {
+        const actionText = "";
+        this.itemsInCart.forEach((item) => {
+            if(parseInt(item.id) === parseInt(this.id)){
+                this.isPresent = true;
+            }
+          });
+        if(this.isPresent){
+          return true;
+        }
+        else{
+          return false;
+        }
+      }
+    },
     methods: {
       getItems(){
         this.itemsInCart = useLoadItems();
@@ -75,6 +95,9 @@ export default {
           this.message = ''
           this.isPresent = false;
         }, 1500);
+      },
+      viewCart(){
+        this.$router.push({ name: 'Cart' })
       },
       async addToCart() {
         if(this.quantity){
@@ -90,7 +113,8 @@ export default {
             this.message = 'Added to cart'
             this.cartItem = this.product;
             this.cartItem["quantity"] = this.quantity;
-            await addItem({ ...this.cartItem })
+            await addItem({ ...this.cartItem });
+            this.viewCart();
           }
           else{
             this.resetMessage();
@@ -101,26 +125,6 @@ export default {
           this.message = "Please select a proper quantity."
           this.resetMessage();
         }
-        
-
-        // this.cart.forEach((item, index) => {
-        //   if(item.name.product.id === this.product.id){
-        //     this.isPresent = true;
-        //   }
-        // });
-  //       if(!this.isPresent){
-  //         this.cartItem = {"product": [...this.product, "quantity"= 1]}
-  //         // const res = await axios.post('http://localhost:3000/items', { name: this.cartItem});
-
-  // console.log(this.cartItem);
-  //         // this.cart = [...this.cart, res.data];
-  //         // this.cartItem = null;
-  //         this.isAdded = true;
-  //       }
-  //       setTimeout(() => {
-  //         this.isAdded = false;
-  //         this.isPresent = false;
-  //       }, 1500);
       }
     }
 }

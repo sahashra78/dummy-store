@@ -1,29 +1,39 @@
 <template>
-  <div class="home position-relative overflow-hidden p-3 p-md-5 text-center bg-light">
-    <div class="col-md-10 mx-auto my-5 py-5 blurBack">
-      <h1 class="display-4 fw-normal heading">DUMMY STORE</h1>
-      <p class="lead fw-normal px-5">Your dream store where you can buy imaginary product without paying.</p>
-      <router-link :to="{name: 'Products'}" class="btn btn-outline-secondary">Shop Now</router-link>
-    </div>
-  </div>
-  <div v-if="products" class="container my-5">
-    <h2 class="text-center display-2">Our Categories</h2>
-    <div class=" d-flex flex-wrap">
-      <div v-for="type in showCategory" :key="type" class="col-12 col-sm-6">
-        <router-link :to="{ name: 'Category', params: {category: type}}">
-          <div class="categoryContainer">
-            <img :src="require('@/assets/category/'+type.replace(/\s/g, '')+'.jpg')" :alt="type" class="image-fluid categoryImage">
-            <h2 v-text="type" class="position-absolute top-50 start-50 translate-middle categoryText"></h2>
-          </div>
-        </router-link>
+  <div id="home">
+    <div class="home position-relative overflow-hidden p-3 p-md-5 text-center bg-light">
+      <div class="col-md-10 mx-auto my-5 py-5 blurBack">
+        <h1 class="display-4 fw-normal heading">DUMMY STORE</h1>
+        <p class="lead fw-normal px-5">Your dream store where you can buy imaginary product without paying.</p>
+        <router-link :to="{name: 'Products'}" class="btn btn-outline-secondary">Shop Now</router-link>
       </div>
-    </div>    
-  </div>
-  
+    </div>
+    <div v-if="products" class="container my-5">
+      <h2 class="text-center display-2">Our Categories</h2>
+      <div class=" d-flex flex-wrap">
+        <transition-group appear mode="ease"
+          @before-enter="beforeEnter"
+          @enter="enter"
+        >
+          <div v-for="(type, index) in showCategory" :key="type" class="col-12 col-sm-6" :data-index="index">
+            <router-link :to="{ name: 'Category', params: {category: type}}">
+              <div class="categoryContainer">
+                <img :src="require('@/assets/category/'+type.replace(/\s/g, '')+'.jpg')" :alt="type" class="image-fluid categoryImage">
+                <h2 v-text="type" class="position-absolute top-50 start-50 translate-middle categoryText"></h2>
+              </div>
+            </router-link>
+          </div>
+        </transition-group>
+      </div>    
+    </div>
+    <div v-else>
+      <h2 class="display-1 my-5 text-center">Loading ...</h2>
+    </div>
+  </div>  
 </template>
 
 <script>
 // @ is an alias to /src
+import gsap from 'gsap'
 
 
 export default {
@@ -49,6 +59,21 @@ export default {
           }
         });
         return this.category;
+      }
+    },
+    methods: {
+      beforeEnter(el) {
+        el.style.opacity = 0;
+        el.style.transform = 'translateY(100px)';
+      },
+      enter(el, done) {
+        gsap.to(el, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          onComplete: done,
+          delay: el.dataset.index * 0.2
+        })
       }
     }
 }

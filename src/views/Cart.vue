@@ -1,65 +1,80 @@
 <template>
-<div class="container py-5" style="position: relative" v-if="itemsInCart.length">
-    <h1 class="text-center mb-5">Shopping cart</h1>
-    <div class="cart-wrap">
-        <div class="d-flex flex-wrap justify-content-center col-12">
-            <div v-for="{ idnum, image, price, quantity, rating, title } in itemsInCart" :key="idnum" class="d-flex flex-wrap cartContainer justify-content-between">
-                <div class="col-12 col-md-5 my-4">
-                    <div class="d-flex itemInfo">
-                        <img :src="image" :alt="title" class="img-fluid item-image">
-                        <div>
-                            <h5 v-text="title"></h5>
-                            $<span v-text="price"></span>
-                        </div>
+    <div id="cart">
+        <h1 class="text-center my-5">Shopping cart</h1>
+        <transition appear mode="out-in"
+            @before-enter="beforeEnter"
+            @enter="enter"
+            @before-leave="beforeLeave"
+            @leave="leave"
+        >
+            <div class="container pb-5" style="position: relative" v-if="itemsInCart.length">
+                <div class="cart-wrap">
+                    <div class="d-flex flex-wrap justify-content-center col-12">
+                        <transition-group appear name="list" tag="div" class="col-12">
+                            <div v-for="{ idnum, image, price, quantity, rating, title } in itemsInCart" :key="idnum">
+                                <div class="d-flex flex-wrap cartContainer justify-content-between">
+                                    <div class="col-12 col-md-5 my-4">
+                                        <div class="d-flex itemInfo">
+                                            <img :src="image" :alt="title" class="img-fluid item-image">
+                                            <div>
+                                                <h5 v-text="title"></h5>
+                                                $<span v-text="price"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6 my-4">
+                                        <div class="d-flex flex-wrap">
+                                            <div class="d-flex flex-wrap col-12">
+                                                <div class="col-6">
+                                                    <strong><i class="fas fa-star"></i></strong>&ensp;<span v-text="rating.rate"></span>&emsp;
+                                                    <strong><i class="fas fa-user"></i></strong>&ensp;<span v-text="rating.count"></span>
+                                                </div>
+                                                <div class="col-6">
+                                                    <button class="orderQuantity" @click="changeQuantity(idnum, quantity, 'minus')"><i class="fas fa-minus"></i></button>
+                                                    <input class="cartQuantity" type="text" :value="quantity" name="quantity" min="1" disabled>
+                                                    <button class="orderQuantity" @click="changeQuantity(idnum, quantity, 'plus')"><i class="fas fa-plus"></i></button>
+                                                </div>
+                                            </div>
+                                            <button class="removeItem position-absolute top-0 end-0" @click="removeFromCart(idnum)"><i class="fas fa-times"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </transition-group>
                     </div>
                 </div>
-                <div class="col-12 col-md-6 my-4">
-                    <div class="d-flex flex-wrap">
-                        <div class="d-flex flex-wrap col-12">
-                            <div class="col-6">
-                                <strong><i class="fas fa-star"></i></strong>&ensp;<span v-text="rating.rate"></span>&emsp;
-                                <strong><i class="fas fa-user"></i></strong>&ensp;<span v-text="rating.count"></span>
-                            </div>
-                            <div class="col-6">
-                                <button class="orderQuantity" @click="changeQuantity(idnum, quantity, 'minus')"><i class="fas fa-minus"></i></button>
-                                <input class="cartQuantity" type="text" :value="quantity" name="quantity" min="1" disabled>
-                                <button class="orderQuantity" @click="changeQuantity(idnum, quantity, 'plus')"><i class="fas fa-plus"></i></button>
-                            </div>
-                        </div>
-                        <button class="removeItem position-absolute top-0 end-0" @click="removeFromCart(idnum)"><i class="fas fa-times"></i></button>
-                    </div>
+                
+                <div class="d-flex align-items-center bg-dark py-3 px-5 text-light rounded my-5" style="width: fit-content">
+                    <span class="text-warning fw-bold">Total: $<span v-text="totalPrice"></span></span>
+                    
+                        <button class="btn btn-success ms-5" @click="clearCart()">CheckOut</button>
                 </div>
             </div>
-        </div>
-    </div>
-    
-    <div class="d-flex align-items-center bg-dark py-3 px-5 text-light rounded my-5" style="width: fit-content">
-        <span class="text-warning fw-bold">Total: $<span v-text="totalPrice"></span></span>
-        
-            <button class="btn btn-success ms-5" @click="clearCart()">CheckOut</button>
-    </div>
-</div>
-
-
-
-<div v-else class="container py-5">
-    <h2>You do not have anything in your shopping cart.</h2>
-    <router-link :to="{name: 'Products'}" class="btn btn-outline-secondary">Shop Now</router-link>
-    <h3 v-if="showMessage" class="text-center text-success display-2">Thanks for Shopping!!</h3>
-</div>
-  
-   <Modal v-if="showModal" @confirm="removeAllItems()" @decline="showModal=false" />
+            <div v-else class="container py-5" style="position: relative;">
+                <h5 class="text-center">You do not have anything in your shopping cart.</h5>
+                <div class="text-center mt-5"><router-link :to="{name: 'Products'}" class="btn btn-outline-secondary">Shop Now</router-link></div>
+                <transition name="list" appear>
+                    <h3 v-if="showMessage" class="text-center text-success display-2 my-5" style="width: 100%;">Thanks for Shopping!!</h3>
+                </transition>
+            </div>  
+        </transition>
+        <Modal v-if="showModal"
+            :total="total"
+            @confirm="removeAllItems()" 
+            @decline="showModal=false" 
+        />
+    </div>    
 </template>
 
 <script>
 
 // import axios from 'axios'
 import { getItem, useLoadItems, updateItem, deleteItem } from '@/firebase.js'
-import ProductCard from '@/views/products/productCard.vue'
 import Modal from '@/views/modal.vue'
+import gsap from 'gsap'
 
 export default {
-    components: { ProductCard, Modal },
+    components: { Modal },
     data(){
         return{
             total: 0,
@@ -100,11 +115,38 @@ export default {
         },
         async changeQuantity(id, qty, action){
             const updatedQuantity = 0;
-            if(action == "minus" && qty>1) { this.updatedQuantity = qty - 1;  }
+            if(action == "minus" && qty>1) {this.updatedQuantity = qty - 1;  }
             if(action == "plus") { this.updatedQuantity = qty + 1;  }
-            const item = await getItem(id);
-            item.quantity = this.updatedQuantity;
-            await updateItem(id, { ...item });
+            if(this.updatedQuantity){
+                const item = await getItem(id);
+                item.quantity = this.updatedQuantity;
+                await updateItem(id, { ...item });
+            }
+        },
+        // transitions methods
+        beforeEnter(el) {
+            el.style.opacity = 0;
+            el.style.transform = 'translateY(-100px)';
+        },
+        enter(el, done){
+            gsap.to(el, {
+                y:0,
+                opacity: 1,
+                duration: 0.4,
+                onComplete: done
+            })
+        },
+        beforeLeave(el) {
+            el.style.opacity = 1;
+            el.style.transform = 'translateY(0)';
+        },
+        leave(el, done){
+            gsap.to(el, {
+                y:-100,
+                opacity: 0,
+                duration: 0.4,
+                onComplete: done
+            })
         }
     }
 
@@ -168,5 +210,25 @@ $quantitySize: 20px;
                 background: none;
             }
         }
+    }
+    // animation style
+
+    .list-enter-from, .list-leave-to {
+        opacity: 0;
+        transform: scale(0.6) translateY(-200px);
+    }
+    .list-enter-to, .list-leave-from {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+    .list-enter-active{
+        transition: all 0.4s ease;
+    }
+    .list-leave-active{
+        transition: all 0.4s ease;
+        position: absolute;
+    }
+    .list-move{
+        transition: all 0.4s ease;
     }
 </style>

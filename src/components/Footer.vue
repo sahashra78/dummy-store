@@ -49,9 +49,7 @@
   <div class="footer-bottom">
     Copyright &copy; Sahashra Rajbhandari {{date}}.
   </div>
-</div>  
-<!--   Footer Bottom end -->
-  
+</div>
 <!--   FOOTER END -->
 </template>
 
@@ -68,6 +66,9 @@ data(){
 <style lang="scss" scoped>
     @import '@/static/Footer.scss';
 
+    .footer {
+      margin-top: auto;
+    }
     .footer a {
         color: #eae9e8;
     }
